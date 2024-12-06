@@ -28,7 +28,7 @@ RUN apk add --no-cache --update git python3 gcompat ; \
 FROM --platform=$TARGETPLATFORM gcr.io/distroless/nodejs:$VERSION
 
 LABEL org.opencontainers.image.authors="Soketi <open-source@soketi.app>"
-LABEL org.opencontainers.image.source="https://github.com/soketi/soketi"
+LABEL org.opencontainers.image.source="https://github.com/PromptHubUS/soketi"
 LABEL org.opencontainers.image.url="https://soketi.app"
 LABEL org.opencontainers.image.documentation="https://docs.soketi.app"
 LABEL org.opencontainers.image.vendor="Soketi"

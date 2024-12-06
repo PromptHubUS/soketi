@@ -1,5 +1,3 @@
-version: "3"
-
 networks:
   soketi:
     driver: bridge
@@ -15,17 +13,19 @@ services:
     environment:
       - SERVICES=sqs,s3
       - DEBUG=1
-      - HOST_TMP_FOLDER=/tmp/localstack
+      #      - HOST_TMP_FOLDER=/tmp/localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
-      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      #      - "${TMPDIR:-./volume/tmp}/localstack:/tmp/localstack"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       - soketi
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4566/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:4566/_localstack/health" ]
       retries: 3
       timeout: 5s
+
   initialize_sqs:
     container_name: initialize_sqs
     build:
@@ -45,6 +45,7 @@ services:
     depends_on:
       localstack:
         condition: service_healthy
+
   dynamodb:
     container_name: dynamodb
     image: amazon/dynamodb-local:1.22.0
@@ -54,8 +55,9 @@ services:
     networks:
       - soketi
     environment:
-      AWS_ACCESS_KEY_ID: fake-id
-      AWS_SECRET_ACCESS_KEY: fake-secret
+      - AWS_ACCESS_KEY_ID=fake-id
+      - AWS_SECRET_ACCESS_KEY=fake-secret
+
   initialize_dynamodb:
     container_name: initialize_dynamodb
     image: node:18-alpine
@@ -65,6 +67,8 @@ services:
       - soketi
     environment:
       - DYNAMODB_URL="dynamodb:8000"
+      - AWS_ACCESS_KEY_ID=fake-id
+      - AWS_SECRET_ACCESS_KEY=fake-secret
     entrypoint:
       - node
       - /app/tests/fixtures/dynamodb_schema.js
