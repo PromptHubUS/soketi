@@ -66,7 +66,7 @@ services:
     networks:
       - soketi
     environment:
-      - DYNAMODB_URL="dynamodb:8000"
+      - DYNAMODB_URL=dynamodb:8000
       - AWS_ACCESS_KEY_ID=fake-id
       - AWS_SECRET_ACCESS_KEY=fake-secret
     entrypoint:
